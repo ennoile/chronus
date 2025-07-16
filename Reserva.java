@@ -36,7 +36,7 @@ public class Reserva {
         this.recursos = recursos;
     }
 
-    public boolean reservarRecurso(List<Reserva> reservas) {
+    public boolean marcarReserva(List<Reserva> reservas) {
         for (Reserva reserva : reservas) {
             if (reserva.getRecursos().equals(this.recursos) &&
                     reserva.getAlocacao().getData().equals(this.alocacao.getData())) {

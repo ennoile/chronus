@@ -56,6 +56,10 @@ public class Recurso {
         recursos.add(this);
     }
 
+    public void removerRecurso(List<Recurso> recursos) {
+        recursos.remove(this);
+    }
+
     public void listarHorariosLivres(List<Reserva> reservas, LocalDate data) {
         List<LocalTime> horariosLivres = new ArrayList<>();
 

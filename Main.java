@@ -54,6 +54,12 @@ public class Main {
                 case 7:
                     gerenciarInterdicaoRecurso();
                     break;
+                case 8:
+                    excluirRecurso();
+                    break;
+                case 9:
+                    cancelarReserva();
+                    break;
                 case 0:
                     System.out.println("\nEncerrando o programa...\n");
                     break;
@@ -72,6 +78,8 @@ public class Main {
         System.out.println("5. Listar Reservas");
         System.out.println("6. Listar Horários Disponíveis");
         System.out.println("7. Interditar/Desinterditar Recurso");
+        System.out.println("8. Excluir Recurso");
+        System.out.println("9. Cancelar Reserva");
         System.out.println("0. Sair");
         System.out.print("Escolha uma opção: ");
     }
@@ -215,7 +223,7 @@ public class Main {
         Alocacao alocacao = new Alocacao(data, horaInicio, horaFim);
         Reserva reserva = new Reserva(finalidade, alocacao, recurso);
 
-        if (reserva.reservarRecurso(reservas)) {
+        if (reserva.marcarReserva(reservas)) {
             System.out.println("Recurso reservado com sucesso!\n");
         } else {
             System.out.println(
@@ -307,5 +315,71 @@ public class Main {
                 System.out.println("Operação cancelada.\n");
             }
         }
+    }
+
+    private static void excluirRecurso() {
+        if (recursos.isEmpty()) {
+            System.out.println("\nNenhum recurso cadastrado.\n");
+            return;
+        }
+
+        System.out.println("\nRecursos disponíveis para exclusão:");
+        for (int i = 0; i < recursos.size(); i++) {
+            System.out.println((i + 1) + ". " + recursos.get(i).getNome());
+        }
+
+        System.out.print("Escolha o número do recurso que deseja excluir: ");
+        int index = scanner.nextInt() - 1;
+        scanner.nextLine();
+
+        if (index < 0 || index >= recursos.size()) {
+            System.out.println("Recurso inválido.\n");
+            return;
+        }
+
+        Recurso recursoSelecionado = recursos.get(index);
+
+        // Verifica se há reservas para o recurso
+        boolean possuiReservas = reservas.stream()
+                .anyMatch(r -> r.getRecursos().equals(recursoSelecionado));
+
+        if (possuiReservas) {
+            System.out.println("Não é possível excluir o recurso. Ele possui reservas associadas.\n");
+            return;
+        }
+
+        recursoSelecionado.removerRecurso(recursos);
+        System.out.println("Recurso excluído com sucesso.\n");
+    }
+
+    private static void cancelarReserva() {
+        if (reservas.isEmpty()) {
+            System.out.println("\nNão há reservas para cancelar.\n");
+            return;
+        }
+
+        System.out.println("\nReservas:");
+        for (int i = 0; i < reservas.size(); i++) {
+            Reserva reserva = reservas.get(i);
+            System.out.printf("%d. Finalidade: %s, Recurso: %s, Data: %s, Horário: %s - %s\n",
+                    i + 1,
+                    reserva.getFinalidade(),
+                    reserva.getRecursos().getNome(),
+                    reserva.getAlocacao().getData(),
+                    reserva.getAlocacao().getHoraInicial(),
+                    reserva.getAlocacao().getHoraFinal());
+        }
+
+        System.out.print("Digite o número da reserva que deseja cancelar: ");
+        int index = scanner.nextInt() - 1;
+        scanner.nextLine(); // limpar buffer
+
+        if (index < 0 || index >= reservas.size()) {
+            System.out.println("Reserva inválida.\n");
+            return;
+        }
+
+        reservas.remove(index);
+        System.out.println("Reserva cancelada com sucesso!\n");
     }
 }
