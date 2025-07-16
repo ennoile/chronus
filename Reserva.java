@@ -1,38 +1,58 @@
+import java.time.LocalTime;
+import java.util.List;
+
 public class Reserva {
     private String finalidade;
-    private Usuario usuario;
-    private Recurso recurso;
     private Alocacao alocacao;
+    private Recurso recursos;
 
-    public Reserva(String finalidade, Usuario usuario, Recurso recurso, Alocacao alocacao){
+    public Reserva(String finalidade, Alocacao alocacao, Recurso recursos) {
         this.finalidade = finalidade;
-        this.usuario = usuario;
-        this.recurso = recurso;
-        this.alocacao = alocacao; 
+        this.alocacao = alocacao;
+        this.recursos = recursos;
     }
 
-    public void exibirDetalhes(){
-        System.out.println("Reserva para: " + finalidade);
-        System.out.println("Usuario: " + usuario.login);
-        System.out.println("Recurso: " + recurso.getNome());
-        System.out.println("Data: " + alocacao.getData());
-        System.out.println("Hora Inicio: " + alocacao.getHoraInicio());
-        System.out.println("Hora Fim: " + alocacao.getHoraFim());
-    }
-
-    public String getFinalidade(){
+    public String getFinalidade() {
         return finalidade;
     }
 
-    public Usuario getUsuario(){
-        return usuario;
+    public void setFinalidade(String finalidade) {
+        this.finalidade = finalidade;
     }
 
-    public Recurso getRecurso(){
-        return recurso;
-    }
-
-    public Alocacao getAlocacao(){
+    public Alocacao getAlocacao() {
         return alocacao;
+    }
+
+    public void setAlocacao(Alocacao alocacao) {
+        this.alocacao = alocacao;
+    }
+
+    public Recurso getRecursos() {
+        return recursos;
+    }
+
+    public void setRecursos(Recurso recursos) {
+        this.recursos = recursos;
+    }
+
+    public boolean reservarRecurso(List<Reserva> reservas) {
+        for (Reserva reserva : reservas) {
+            if (reserva.getRecursos().equals(this.recursos) &&
+                    reserva.getAlocacao().getData().equals(this.alocacao.getData())) {
+
+                LocalTime inicioExistente = reserva.getAlocacao().getHoraInicial();
+                LocalTime fimExistente = reserva.getAlocacao().getHoraFinal();
+
+                LocalTime novoInicio = this.alocacao.getHoraInicial();
+                LocalTime novoFim = this.alocacao.getHoraFinal();
+
+                if (!(novoFim.isBefore(inicioExistente) || novoInicio.isAfter(fimExistente))) {
+                    return false;
+                }
+            }
+        }
+        reservas.add(this);
+        return true;
     }
 }
