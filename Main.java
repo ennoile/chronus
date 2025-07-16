@@ -25,6 +25,15 @@ public class Main {
     public static void main(String[] args) {
         inicializarDados();
 
+        while (true) {
+            boolean autenticado = login();
+            if (autenticado) {
+                System.out.println("Login realizado com sucesso!\n");
+                break;
+            } else {
+                System.out.println("Login ou senha inválidos. Tente novamente.\n");
+            }
+        }
         int opcao = -1;
 
         do {
@@ -82,6 +91,20 @@ public class Main {
         System.out.println("9. Cancelar Reserva");
         System.out.println("0. Sair");
         System.out.print("Escolha uma opção: ");
+    }
+
+    private static boolean login() {
+        System.out.print("Digite seu login: ");
+        String login = scanner.nextLine();
+        System.out.print("Digite sua senha: ");
+        String senha = scanner.nextLine();
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getLogin().equals(login) && usuario.getSenha().equals(senha)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void cadastrarRecurso() {
